@@ -1,3 +1,6 @@
+#ifndef particle_h
+#define particle_h
+
 #include <Eigen/Core>
 #include <iostream>
 #include <string>
@@ -20,3 +23,5 @@ class Particle {
         Eigen::Vector3d velocity;
         Eigen::Vector3d acceleration;
 };
+
+#endif

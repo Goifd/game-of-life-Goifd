@@ -1,7 +1,7 @@
 #include <catch2/catch_test_macros.hpp>
 #include <catch2/matchers/catch_matchers_floating_point.hpp>
 #include "particle.hpp"
-//#include "system.hpp"
+#include "system.hpp"
 #include <Eigen/Core>
 
 using Catch::Matchers::WithinRel;
@@ -50,4 +50,8 @@ TEST_CASE( "Particle update function works correctly", "[particle_update]" ) {
         p4.update(dt);
     }
     REQUIRE(p4.getPosition().isApprox(Eigen::Vector3d(1,0,0), 0.1));
+}
+
+TEST_CASE("System initialization works correctly", "[system_init]"){
+
 }
