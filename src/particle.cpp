@@ -79,18 +79,20 @@ int pSystem::getNumOfParticles(){
 
 // acceleration on particle1 due to particle2
 Eigen::Vector3d pSystem::calcAcceleration(const Particle& p1, const Particle& p2, double epsilon){
+    if(epsilon<0)
+        throw std::invalid_argument("Parameter epsilon must be larger than or equal to zero.");
     double distance = ((p2.getPosition()-p1.getPosition()).norm());
     Eigen::Vector3d acc = p2.getMass()*(p2.getPosition()-p1.getPosition())/std::pow((std::pow(distance,2.0)+std::pow(epsilon,2.0)),1.5);
     return acc;
 }
 
-void pSystem::updateAccelerations(){
+void pSystem::updateAccelerations(double epsilon){
     // first loop can be parallelized, do not need copy of classes since acceleration does not depend on the current value of acceleration
     // and other parameters do not change
     for(Particle& p : particles){
         for(Particle& k : particles){
             if(&p != &k)
-                p.addAcceleration(calcAcceleration(p, k));
+                p.addAcceleration(calcAcceleration(p, k, epsilon));
         }      
     }
 }
@@ -101,10 +103,10 @@ void pSystem::updateVelPos(double dt){
     }
 }
 
-void pSystem::evolveSystem(double t, double dt){
+void pSystem::evolveSystem(double t, double dt, double epsilon){
     // both methods are parallelized themselves
     for(int i=0; i<t; i+=dt){
-        updateAccelerations();
+        updateAccelerations(epsilon);
         // threads should wait for each other here
         updateVelPos(dt);
     }

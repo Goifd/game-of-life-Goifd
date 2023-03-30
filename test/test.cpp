@@ -63,22 +63,41 @@ TEST_CASE("System initialization and modification works correctly", "[system_ini
     REQUIRE(s1->getNumOfParticles()==2);
 }
 
-TEST_CASE("Gravitational force between particles is as expected"){
+TEST_CASE("Gravitational force between particles is as expected", "[calcAcceleration]"){
     std::unique_ptr<pSystem> s1(new pSystem());
 
     Eigen::Vector3d acc1 = s1->calcAcceleration(Particle(100, Eigen::Vector3d(0,0,0), Eigen::Vector3d(1, 0, 0)),
-                       Particle(10, Eigen::Vector3d(1,1,1), Eigen::Vector3d(1, 1, 0)));
+                                                Particle(10, Eigen::Vector3d(1,1,1), Eigen::Vector3d(1, 1, 0)),
+                                                0.0);
     REQUIRE(acc1.isApprox(Eigen::Vector3d(1.92,1.92,1.92), 0.01));
 
     Eigen::Vector3d acc2 = s1->calcAcceleration(Particle(100.5, Eigen::Vector3d(3.23,30.0,0.0), Eigen::Vector3d(1, 0, 0)),
-                       Particle(10.0, Eigen::Vector3d(1.0,1.2,1.0), Eigen::Vector3d(1, 1, 0)));
+                                                Particle(10.0, Eigen::Vector3d(1.0,1.2,1.0), Eigen::Vector3d(1, 1, 0)),
+                                                0.0);
     REQUIRE(acc2.isApprox(Eigen::Vector3d(-0.0009235,-0.0119273,0.0004141), 0.0001));
 
     Eigen::Vector3d acc3 = s1->calcAcceleration(Particle(1005.0, Eigen::Vector3d(0,0,0), Eigen::Vector3d(1, 0, 0)),
-                       Particle(10.0, Eigen::Vector3d(1.0,1.2,1.0), Eigen::Vector3d(1, 1, 0)),1.0);
-    std::cout << acc3 << std::endl;
+                                                Particle(10.0, Eigen::Vector3d(1.0,1.2,1.0), Eigen::Vector3d(1, 1, 0)),
+                                                1.0);
     REQUIRE(acc3.isApprox(Eigen::Vector3d(1.068871,1.282645,1.068871), 0.0001));
+
+    REQUIRE_THROWS(s1->calcAcceleration(Particle(100, Eigen::Vector3d(0,0,0), Eigen::Vector3d(1, 0, 0)),
+                                        Particle(10, Eigen::Vector3d(1,1,1), Eigen::Vector3d(1, 1, 0)),
+                                         -10));
 }
 
+TEST_CASE("Gravitational force between more than 2 particles works as is expected", "[updateAcceleration]"){
+    // checks the equally sized case and also if the particle calculates its acceleration due to itself 
+    // due to code structure
+    std::unique_ptr<pSystem> s1(new pSystem());
+    s1->addParticle(Particle(100, Eigen::Vector3d(0,0,0), Eigen::Vector3d(1, 0, 0)));
+    s1->addParticle(Particle(100, Eigen::Vector3d(1,0,0), Eigen::Vector3d(1, 0, 0)));
+    s1->addParticle(Particle(100, Eigen::Vector3d(-1,0,0), Eigen::Vector3d(1, 0, 0)));
 
+    s1->updateAccelerations(0.0);
+
+    REQUIRE(s1->getParticle(0).getAcceleration().isApprox(Eigen::Vector3d(0,0,0),0.0001));
+    REQUIRE(s1->getParticle(1).getAcceleration().isApprox(Eigen::Vector3d(-125,0,0),0.0001));
+    REQUIRE(s1->getParticle(2).getAcceleration().isApprox(Eigen::Vector3d(125,0,0),0.0001));
+}
 

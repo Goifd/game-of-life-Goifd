@@ -36,16 +36,16 @@ class pSystem {
         int getNumOfParticles();
 
         // calculates acceleration between two particles
-        Eigen::Vector3d calcAcceleration(const Particle& p1, const Particle& p2, double epsilon=0.0);
+        Eigen::Vector3d calcAcceleration(const Particle& p1, const Particle& p2, double epsilon);
 
         // updates acceleration parameter for all particles in the system
-        void updateAccelerations();
+        void updateAccelerations(double epsilon);
 
         // updates velocity and position of all particles in the system
         void updateVelPos(double dt);
 
         // evolves the system
-        void evolveSystem(double t, double dt);
+        void evolveSystem(double t, double dt, double epsilon=0.0);
         
 
     private:
