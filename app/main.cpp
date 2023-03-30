@@ -7,14 +7,17 @@ int main() {
   Eigen::Vector3d r{0,0,0};
   Particle p1 = Particle(100, r, v);
   
-  std::cout << p1.getPosition() << std::endl;
+  p1.print();
+  std::cout << "---------------------" << std::endl;
   p1.update(1);
+  p1.print();
   std::cout << "---------------------" << std::endl;
-  std::cout << p1.getVelocity() << std::endl;
+  p1.update(0.1);
+  p1.print();
   std::cout << "---------------------" << std::endl;
-  std::cout << p1.getPosition() << std::endl;
+  p1.update(0);
+  p1.print();
   std::cout << "---------------------" << std::endl;
-  std::cout << "Hello World!\n" << v << std::endl;
 
   return 0;
 }

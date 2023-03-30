@@ -6,8 +6,12 @@ class System {
     public:
         System();
         void addParticle(Particle p);
-        Particle getParticle(int n);
+        void deleteParticle(int n);
+        Particle &getParticle(int n);
         void printParticles();
+        int getNumOfParticles();
+        Eigen::Vector3d calcAcceleration(Particle &p1, Particle &p2);
+        
 
     private:
         int numParticles;

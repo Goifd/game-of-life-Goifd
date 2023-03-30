@@ -10,16 +10,27 @@ void System::addParticle(Particle p){
     numParticles += 1;
 }
 
-Particle System::getParticle(int n){
+Particle& System::getParticle(int n){
+    // indexing error is handled internally by vector
     return particles.at(n);
 }
 
 void System::printParticles(){
     for(int i=0; i<numParticles; i++){
         std::cout << "particle " << i << std::endl;
-        std::cout << "mass: " << particles.at(i).getMass() << std::endl;
-        std::cout << "position: " << particles.at(i).getPosition().transpose() << std::endl;
-        std::cout << "velocity: " << particles.at(i).getPosition().transpose() << std::endl;
+        particles.at(i).print()
+        std::cout << "-------------------" << std::endl;
     }
 }
+
+void System::deleteParticle(int n){
+    // error with index input is handled internally by vector class
+    particles.erase(particles.begin(), + n);
+}
+
+int System::getNumOfParticles(){
+    return numParticles;
+}
+
+
 
