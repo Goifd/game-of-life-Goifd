@@ -77,6 +77,33 @@ int pSystem::getNumOfParticles(){
     return numParticles;
 }
 
+// function calculates the total energy of the system when called (it could also be continuously tracked, but it seems unnecessary
+// as we only want to know the energy at the beginning and end of the simulation)
+std::tuple<double, double> pSystem::getEnergy(){
+    double E_kin = 0.0;
+    double E_pot = 0.0;
+    double e_kin = 0.0;
+    double e_pot = 0.0;
+    double distance = 0.0;
+
+    for(Particle& p : particles){
+
+        // add Particle p's kinetic energy to total energy
+        e_kin = (1.0/2.0 * p.getMass() * std::pow( p.getVelocity().norm(), 2.0 ));         
+        E_kin +=  e_kin;
+
+        for(Particle& k : particles){
+            if(&p != &k){
+                distance = ((p.getPosition()-k.getPosition()).norm());
+                e_pot = (-1.0/2.0 * p.getMass() * k.getMass() / distance );
+                E_pot += e_pot;
+            }
+        }      
+    }
+
+    return std::make_tuple(E_kin, E_pot);
+}
+
 // acceleration on particle1 due to particle2
 Eigen::Vector3d pSystem::calcAcceleration(const Particle& p1, const Particle& p2, double epsilon){
     if(epsilon<0)

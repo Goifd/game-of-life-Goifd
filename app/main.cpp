@@ -4,6 +4,7 @@
 #include "particle.hpp"
 #include <CLI11.hpp>
 #include <vector>
+#include <tuple>
 
 int main(int argc, char** argv) {
 
@@ -37,6 +38,10 @@ int main(int argc, char** argv) {
   std::unique_ptr<pSystem> s1 = generator.getSystem();
 
   // the system with random initial conditions
+  std::tuple<double, double> E = s1->getEnergy();
+  std::cout << "Initial E_kin = " << std::get<0>(E) << std::endl;
+  std::cout << "Initial E_pot = " << std::get<1>(E) << std::endl;
+  std::cout << "Initial E_tot = " << std::get<0>(E) + std::get<1>(E) << std::endl;
   std::cout << "The system before the evolution: \n" << std::endl;
   s1->printParticles();
 
@@ -50,9 +55,17 @@ int main(int argc, char** argv) {
   // the system after the evolution
   std::cout << "Time taken to run the simulation: " << elapsed << std::endl;
   std::cout << "The system after evolving for t: " << t << " and with dt: " << dt << std::endl;
+  std::tuple<double, double> E_after = s1->getEnergy();
+  std::cout << "After the evolution E_kin = " << std::get<0>(E_after) << std::endl;
+  std::cout << "After the evolution E_pot = " << std::get<1>(E_after) << std::endl;
+  std::cout << "After the evolution E_tot = " << std::get<0>(E_after) + std::get<1>(E_after) << std::endl;
   std::cout << "\n" << std::endl;;
   s1->printParticles();
-  
+
+  std::cout << std::endl;
+  std::cout << "Initial E_tot = " << std::get<0>(E) + std::get<1>(E) << std::endl;
+  std::cout << "After the evolution E_tot = " << std::get<0>(E_after) + std::get<1>(E_after) << std::endl;
+  std::cout << "E drop: " << (std::get<0>(E) + std::get<1>(E))-(std::get<0>(E_after) + std::get<1>(E_after)) << std::endl;  
 
   
 

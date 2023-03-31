@@ -9,6 +9,7 @@
 #include <random>
 #include <math.h>
 #include <chrono>
+#include <tuple>
 
 class Particle {
     public:
@@ -38,6 +39,7 @@ class pSystem {
         Particle &getParticle(int n);
         void printParticles();
         int getNumOfParticles();
+        std::tuple<double, double> getEnergy();
 
         // calculates acceleration between two particles
         Eigen::Vector3d calcAcceleration(const Particle& p1, const Particle& p2, double epsilon);
