@@ -114,10 +114,10 @@ bool compareVector3d(Eigen::Vector3d v1, Eigen::Vector3d v2, double range){
 
 TEST_CASE("Initial condition generator test","[initCondGenerator]"){
 // create system generator
-  sysGenerator generator = sysGenerator();
+  solarSysGenerator generator = solarSysGenerator();
 
   // initialize solar system
-  std::unique_ptr<pSystem> s1 = generator.getSystem();
+  std::unique_ptr<pSystem> s1 = generator.generateInitialConditions();
 
   // test masses
   REQUIRE(s1->getParticle(0).getMass() == 1.);
@@ -160,9 +160,31 @@ TEST_CASE("Initial condition generator test","[initCondGenerator]"){
 }
 
 TEST_CASE("Test evolveSystem function", "[evolveSystem]"){
-    // create simple system of two bodies
+    // create simple system of three bodies
+    std::unique_ptr<pSystem> s1(new pSystem());
+    s1->addParticle(Particle(100, Eigen::Vector3d(0,0,0), Eigen::Vector3d(0, 0, 0)));
+    s1->addParticle(Particle(100, Eigen::Vector3d(1,0,0), Eigen::Vector3d(0, 0, 0)));
+    s1->addParticle(Particle(100, Eigen::Vector3d(-1,0,0), Eigen::Vector3d(0, 0, 0)));
 
-    
+    s1->evolveSystem(0.1,0.1);
+
+    REQUIRE(s1->getParticle(0).getVelocity().isApprox(Eigen::Vector3d(0, 0, 0), 0.001));
+    REQUIRE(s1->getParticle(1).getVelocity().isApprox(Eigen::Vector3d(-12.5, 0, 0), 0.001));
+    REQUIRE(s1->getParticle(2).getVelocity().isApprox(Eigen::Vector3d(12.5, 0, 0), 0.001));
+
+    REQUIRE(s1->getParticle(0).getPosition().isApprox(Eigen::Vector3d(0, 0, 0), 0.001));
+    REQUIRE(s1->getParticle(1).getPosition().isApprox(Eigen::Vector3d(1, 0, 0), 0.001));
+    REQUIRE(s1->getParticle(2).getPosition().isApprox(Eigen::Vector3d(-1, 0, 0), 0.001));
+
+    s1->evolveSystem(0.1,0.1);
+
+    REQUIRE(s1->getParticle(0).getVelocity().isApprox(Eigen::Vector3d(0, 0, 0), 0.001));
+    REQUIRE(s1->getParticle(1).getVelocity().isApprox(Eigen::Vector3d(-25, 0, 0), 0.001));
+    REQUIRE(s1->getParticle(2).getVelocity().isApprox(Eigen::Vector3d(25, 0, 0), 0.001));
+
+    REQUIRE(s1->getParticle(0).getPosition().isApprox(Eigen::Vector3d(0, 0, 0), 0.001));
+    REQUIRE(s1->getParticle(1).getPosition().isApprox(Eigen::Vector3d(-0.25, 0, 0), 0.001));
+    REQUIRE(s1->getParticle(2).getPosition().isApprox(Eigen::Vector3d(0.25, 0, 0), 0.001));  
 }
 
 

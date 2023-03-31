@@ -59,23 +59,37 @@ class pSystem {
         std::vector<Particle> particles;
 };
 
-class sysGenerator{
+class InitialConditionGenerator{
+    public:
+        virtual std::unique_ptr<pSystem> generateInitialConditions() = 0;
+
+    protected:
+        // System to return by generateInitialConditions
+        std::unique_ptr<pSystem> s1 = std::make_unique<pSystem>();
+};
+
+class solarSysGenerator : public InitialConditionGenerator{
 
     public:
-        sysGenerator();
+        solarSysGenerator();
         // return the unique pointer
-        std::unique_ptr<pSystem> getSystem();
+        std::unique_ptr<pSystem> generateInitialConditions();
 
     private:
         // Solar System data
         std::vector<double> masses{1.,1./6023600,1./408524,1./332946.038,1./3098710,1./1047.55,1./3499,1./22962,1./19352};
         std::vector<double> distances{0.0, 0.4, 0.7, 1, 1.5, 5.2, 9.5, 19.2, 30.1};    
-
-        // Solar System
-        std::unique_ptr<pSystem> s1 = std::make_unique<pSystem>();
 };
 
-// timer class from the OpenMP examples, UCL PHAS0100 course, week 8 examples.
+class randomSysGenerator : public InitialConditionGenerator{
+
+    public:
+        randomSysGenerator(int n);
+        // return the unique pointer
+        std::unique_ptr<pSystem> generateInitialConditions();
+};
+
+// timer class from the UCL PHAS0100 course, OpenMP week 8 examples.
 class Timer {
     public:
         void reset();

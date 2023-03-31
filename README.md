@@ -52,7 +52,7 @@ You should fill in the instructions for using the app here.
 
 This project is maintained by Dr. Jamie Quinn as part of UCL ARC's course, Research Computing in C++.
 
-## 1.3.d Output:
+## Exercise 1.3.d Output:
 The system before the evolution: 
 
 particle 0
@@ -152,3 +152,115 @@ mass: 5.16742e-05
 position: (-25.8,-15.5,0)
 velocity: (0.0941,-0.156,0)
 -------------------
+
+
+## Exercise 2.1 energy results
+
+### Summarized
+dt  % E decrease
+--------------
+1.0         75.8915 % 
+0.5         59.1017 % 
+0.3         49.8256 % 
+0.2         43.739 % 
+0.1         33.3735 % 
+0.08        31.1696 % 
+0.04        21.09 % 
+0.01        8.83165 % 
+0.005       5.65817 % 
+0.001       2.3165 % 
+0.0001      0.64172 % 
+0.00005     0.393049 % 
+0.00001     0.103788 % 
+0.000005    0.0549349 % 
+0.000001    0.0116069 % 
+
+Which is as expected, the smaller the timestep the smaller the energy loss. Note that the energy loss is worse than linear.
+
+### Detailed outputs
+
+dt: 1
+Initial E_tot = -0.00011243
+After the evolution E_tot = -2.71051e-05
+E drop: -8.53248e-05 --> 75.8915 % 
+
+dt: 0.5
+Initial E_tot = -0.00011243
+After the evolution E_tot = -4.59819e-05
+E drop: -6.6448e-05 --> 59.1017 % 
+
+dt: 0.3
+Initial E_tot = -0.00011243
+After the evolution E_tot = -5.64111e-05
+E drop: -5.60188e-05 --> 49.8256 % 
+
+dt: 0.2
+Initial E_tot = -0.00011243
+After the evolution E_tot = -6.32542e-05
+E drop: -4.91757e-05 --> 43.739 % 
+
+dt: 0.1
+Initial E_tot = -0.00011243
+After the evolution E_tot = -7.49081e-05
+E drop: -3.75218e-05 --> 33.3735 % 
+
+dt: 0.08
+Initial E_tot = -0.00011243
+After the evolution E_tot = -7.7386e-05
+E drop: -3.50439e-05 --> 31.1696 % 
+
+dt: 0.04
+Initial E_tot = -0.00011243
+After the evolution E_tot = -8.87185e-05
+E drop: -2.37115e-05 --> 21.09 %  
+
+dt: 0.01
+Initial E_tot = -0.00011243
+After the evolution E_tot = -0.000102501
+E drop: -9.92942e-06 --> 8.83165 % 
+
+dt: 0.005
+Initial E_tot = -0.00011243
+After the evolution E_tot = -0.000106068
+E drop: -6.36147e-06 --> 5.65817 % 
+
+dt: 0.001
+Initial E_tot = -0.00011243
+After the evolution E_tot = -0.000109825
+E drop: -2.60444e-06 --> 2.3165 % 
+
+dt: 0.0001
+Initial E_tot = -0.00011243
+After the evolution E_tot = -0.000111708
+E drop: -7.21485e-07 --> 0.64172 % 
+
+## Exercise 2.2
+
+// without optimization
+dt: 0.0001 runtime: 775.441 /step: 0.000123415
+
+// with optimization
+
+dt: 0.1 runtime: 0.0215727 /step: 3.4335e-06
+
+dt: 0.05 runtime: 0.0336548 /step: 2.67824e-06
+
+dt: 0.01 runtime: 0.179502 /step: 2.8569e-06
+
+dt: 0.005 runtime: 0.331951 /step: 2.64159e-06
+
+dt: 0.001 runtime: 1.6483 /step: 2.62335e-06
+
+dt: 0.0005 runtime: 3.41846 /step: 2.72033e-06
+
+dt: 0.0001 runtime: 15.3947 /step: 2.45015e-06
+
+dt: 0.00005 runtime: 33.2303 /step: 2.64438e-06
+
+dt: 0.00001 runtime: 171.915 /step: 2.73611e-06
+
+dt: 0.000005 runtime: 358.138 /step: 2.84997e-06
+
+dt: 0.000001 runtime: 1878.75 /step: 2.99013e-06
+
+Optimization for the dt=0.0001 case sped up the code from 775s to 15s which is more than a 50 times improvement. This is likely due to the fact that optimization speeds up loops quite a bit, and the slow part of this code is exactly those, loops.

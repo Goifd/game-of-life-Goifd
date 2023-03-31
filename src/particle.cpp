@@ -38,12 +38,12 @@ void Particle::addAcceleration(Eigen::Vector3d a){
 }
 
 void Particle::update(double dt){
-    velocity += acceleration*dt;
     position += velocity*dt;
+    velocity += acceleration*dt;
     // reset acceleration so the addAcceleration can start adding up contributions from 0
-    acceleration(0) = 0;
-    acceleration(1) = 0;
-    acceleration(2) = 0;
+    acceleration(0) = 0.0;
+    acceleration(1) = 0.0;
+    acceleration(2) = 0.0;
 }
 pSystem::pSystem(){
     numParticles=0;
@@ -133,19 +133,19 @@ void pSystem::updateVelPos(double dt){
 void pSystem::evolveSystem(double t, double dt, double epsilon){
     // both methods are parallelized themselves
     int steps = 0;
-    for(double i=0; i<=t; i+=dt){
+    double t_elapsed = dt;
+    while(t_elapsed<=t){
         //std::cout << t << std::endl;
         // function calculates acceleration on all particles
         updateAccelerations(epsilon);
         // function updates velocity and position of particles
         updateVelPos(dt);
-        steps +=1;
+        t_elapsed += dt;
+        steps += 1;
     }
-    std::cout << "\n" << std::endl;
-    std::cout << "Total number of steps: " << steps << std::endl;
 }
 
-sysGenerator::sysGenerator(){
+solarSysGenerator::solarSysGenerator(){
     // set up random number generator
     std::mt19937 rng_mt(1);
     std::uniform_real_distribution<double> distribution(0, 2*M_PI);
@@ -173,7 +173,43 @@ sysGenerator::sysGenerator(){
     }
 }
 
-std::unique_ptr<pSystem> sysGenerator::getSystem(){
+std::unique_ptr<pSystem> solarSysGenerator::generateInitialConditions(){
+    return move(s1);
+}
+
+randomSysGenerator::randomSysGenerator(int n){
+    // set up random number generators
+    std::mt19937 rng_mt(1);
+    // theta distribution
+    std::uniform_real_distribution<double> distTheta(0, 2*M_PI);
+    // distance distribution
+    std::uniform_real_distribution<double> distR(0.4, 30.0);
+    // mass distribution
+    std::uniform_real_distribution<double> distM(1/6000000.0, 1/1000.0);
+
+    auto dice = std::bind(distTheta, rng_mt);
+
+    double theta = 0.0;
+    double r = 0.0;
+    double m = 0.0;
+
+    // add other planets with random initial conditions
+    for(int i=0; i<n; i++){
+
+        theta = distTheta(rng_mt);
+        r = distR(rng_mt);
+        m = distM(rng_mt);
+
+        double r_x = r*std::sin(theta);
+        double r_y = r*std::cos(theta);
+        double v_x = -1/std::pow(r,0.5)*std::cos(theta);
+        double v_y = 1/std::pow(r,0.5)*std::sin(theta);
+
+        s1->addParticle(Particle(m, Eigen::Vector3d(r_x, r_y, 0.0), Eigen::Vector3d(v_x, v_y, 0.0)));
+    }
+}
+
+std::unique_ptr<pSystem> randomSysGenerator::generateInitialConditions(){
     return move(s1);
 }
 
