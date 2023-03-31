@@ -177,63 +177,6 @@ dt  % E decrease
 
 Which is as expected, the smaller the timestep the smaller the energy loss. Note that the energy loss is worse than linear.
 
-### Detailed outputs
-
-dt: 1
-Initial E_tot = -0.00011243
-After the evolution E_tot = -2.71051e-05
-E drop: -8.53248e-05 --> 75.8915 % 
-
-dt: 0.5
-Initial E_tot = -0.00011243
-After the evolution E_tot = -4.59819e-05
-E drop: -6.6448e-05 --> 59.1017 % 
-
-dt: 0.3
-Initial E_tot = -0.00011243
-After the evolution E_tot = -5.64111e-05
-E drop: -5.60188e-05 --> 49.8256 % 
-
-dt: 0.2
-Initial E_tot = -0.00011243
-After the evolution E_tot = -6.32542e-05
-E drop: -4.91757e-05 --> 43.739 % 
-
-dt: 0.1
-Initial E_tot = -0.00011243
-After the evolution E_tot = -7.49081e-05
-E drop: -3.75218e-05 --> 33.3735 % 
-
-dt: 0.08
-Initial E_tot = -0.00011243
-After the evolution E_tot = -7.7386e-05
-E drop: -3.50439e-05 --> 31.1696 % 
-
-dt: 0.04
-Initial E_tot = -0.00011243
-After the evolution E_tot = -8.87185e-05
-E drop: -2.37115e-05 --> 21.09 %  
-
-dt: 0.01
-Initial E_tot = -0.00011243
-After the evolution E_tot = -0.000102501
-E drop: -9.92942e-06 --> 8.83165 % 
-
-dt: 0.005
-Initial E_tot = -0.00011243
-After the evolution E_tot = -0.000106068
-E drop: -6.36147e-06 --> 5.65817 % 
-
-dt: 0.001
-Initial E_tot = -0.00011243
-After the evolution E_tot = -0.000109825
-E drop: -2.60444e-06 --> 2.3165 % 
-
-dt: 0.0001
-Initial E_tot = -0.00011243
-After the evolution E_tot = -0.000111708
-E drop: -7.21485e-07 --> 0.64172 % 
-
 ## Exercise 2.2
 
 // without optimization
@@ -264,3 +207,21 @@ dt: 0.000005 runtime: 358.138 /step: 2.84997e-06
 dt: 0.000001 runtime: 1878.75 /step: 2.99013e-06
 
 Optimization for the dt=0.0001 case sped up the code from 775s to 15s which is more than a 50 times improvement. This is likely due to the fact that optimization speeds up loops quite a bit, and the slow part of this code is exactly those, loops.
+
+# Exercise 2.3 
+
+Simulation done: 
+n: 8
+%E change: 1.75464e-05% t: 6.2832 dt: 0.001 runtime: 0.0129206s  /step: 2.05644e-06s
+
+Simulation done: 
+n: 64
+%E change: 0.00744302% t: 6.2832 dt: 0.001 runtime: 0.918987s  /step: 0.000146266s
+
+Simulation done: 
+n: 256
+%E change: 0.376662% t: 6.2832 dt: 0.001 runtime: 14.9825s  /step: 0.0023846s
+
+Simulation done: 
+n: 1024
+%E change: 8.82704% t: 6.2832 dt: 0.001 runtime: 249.426s  /step: 0.0396985s

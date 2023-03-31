@@ -193,8 +193,11 @@ randomSysGenerator::randomSysGenerator(int n){
     double r = 0.0;
     double m = 0.0;
 
+    // add central star
+    s1->addParticle(Particle(1.0, Eigen::Vector3d(0.0, 0.0, 0.0), Eigen::Vector3d(0.0, 0.0, 0.0)));
+
     // add other planets with random initial conditions
-    for(int i=0; i<n; i++){
+    for(int i=1; i<n; i++){
 
         theta = distTheta(rng_mt);
         r = distR(rng_mt);

@@ -37,6 +37,7 @@ int main(int argc, char** argv) {
   }
   
   // create system generator
+  // random seed values can be set in the constructor of randomSysGenerator and solarSysGenerator classes
   randomSysGenerator randomGenerator = randomSysGenerator(n);
   solarSysGenerator solarGenerator = solarSysGenerator();
 
@@ -52,9 +53,12 @@ int main(int argc, char** argv) {
     s1 = solarGenerator.generateInitialConditions();
   }
 
+  // save initial energy
+  std::tuple<double, double> E = s1->getEnergy();
+
   // print initial state
-  std::cout << "Initial state of the system: " << std::endl;
-  s1->printParticles();
+  //std::cout << "Initial state of the system: " << std::endl;
+  //s1->printParticles();
 
   // evolve the system with total time t and timestep dt and epsilon=0.0
   s1->evolveSystem(t, dt, epsilon);
@@ -62,10 +66,19 @@ int main(int argc, char** argv) {
   // measure elapsed time
   double elapsed = timer.elapsed();
 
+  // energy after the evolution
+  std::tuple<double, double> E_after = s1->getEnergy();
+
+  double percentChangeE = ((std::get<0>(E) + std::get<1>(E))-(std::get<0>(E_after) + std::get<1>(E_after)))/
+                          (std::get<0>(E) + std::get<1>(E));
+
   // print final state
+  std::cout << std::endl;
   std::cout << "Simulation done: " << std::endl;
-  std::cout << "dt: " << dt << " runtime: " << elapsed << " /step: " << elapsed/int(t/dt) << std::endl;
-  s1->printParticles();
+  std::cout << "n: " << n << std::endl;
+  std::cout << "%E change: " << percentChangeE <<  "% t: " << t << " dt: " << dt << " runtime: " << elapsed << "s  /step: " << elapsed/int(t/dt) << "s" << std::endl;
+  std::cout << std::endl;
+  //s1->printParticles();
 
   return 0;
 }
