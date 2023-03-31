@@ -51,3 +51,5 @@ You should fill in the instructions for using the app here.
 ## Credits
 
 This project is maintained by Dr. Jamie Quinn as part of UCL ARC's course, Research Computing in C++.
+
+## 1.3.d

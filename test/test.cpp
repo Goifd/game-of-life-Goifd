@@ -101,3 +101,70 @@ TEST_CASE("Gravitational force between more than 2 particles works as is expecte
     REQUIRE(s1->getParticle(2).getAcceleration().isApprox(Eigen::Vector3d(125,0,0),0.0001));
 }
 
+// function to compare the position and velocity vectors for random initialization
+bool compareVector3d(Eigen::Vector3d v1, Eigen::Vector3d v2, double range){
+    if(v1(0)>=(v2(0)-range) && v1(0)<=(v2(0)+range) &&
+       v1(1)>=(v2(1)-range) && v1(1)<=(v2(1)+range) &&
+       v1(2)>=(v2(2)-range) && v1(0)<=(v2(2)+range)){
+
+        return true;
+    }
+    return false;
+}
+
+TEST_CASE("Initial condition generator test","[initCondGenerator]"){
+// create system generator
+  sysGenerator generator = sysGenerator();
+
+  // initialize solar system
+  std::unique_ptr<pSystem> s1 = generator.getSystem();
+
+  // test masses
+  REQUIRE(s1->getParticle(0).getMass() == 1.);
+  REQUIRE(s1->getParticle(1).getMass() == 1./6023600);
+  REQUIRE(s1->getParticle(2).getMass() == 1./408524);
+  REQUIRE(s1->getParticle(3).getMass() == 1./332946.038);
+  REQUIRE(s1->getParticle(4).getMass() == 1./3098710);
+  REQUIRE(s1->getParticle(5).getMass() == 1./1047.55);
+  REQUIRE(s1->getParticle(6).getMass() == 1./3499);
+  REQUIRE(s1->getParticle(7).getMass() == 1./22962);
+  REQUIRE(s1->getParticle(8).getMass() == 1./19352);
+
+  // test velocities and position (sin and cos is between -1 and 1, test final vel and pos values to be between the bound)
+  REQUIRE(s1->getParticle(0).getVelocity().isApprox(Eigen::Vector3d(0,0,0),0.0001));
+  REQUIRE(s1->getParticle(0).getPosition().isApprox(Eigen::Vector3d(0,0,0),0.0001));
+
+  REQUIRE(compareVector3d(s1->getParticle(1).getVelocity(), Eigen::Vector3d(0,0,0), 1.0/std::pow(0.4,0.5)));
+  REQUIRE(compareVector3d(s1->getParticle(1).getPosition(), Eigen::Vector3d(0,0,0),0.4));
+
+  REQUIRE(compareVector3d(s1->getParticle(2).getVelocity(), Eigen::Vector3d(0,0,0), 1.0/std::pow(0.7,0.5)));
+  REQUIRE(compareVector3d(s1->getParticle(2).getPosition(), Eigen::Vector3d(0,0,0),0.7));
+
+  REQUIRE(compareVector3d(s1->getParticle(3).getVelocity(), Eigen::Vector3d(0,0,0), 1.0/std::pow(1.0,0.5)));
+  REQUIRE(compareVector3d(s1->getParticle(3).getPosition(), Eigen::Vector3d(0,0,0),1.0));
+
+  REQUIRE(compareVector3d(s1->getParticle(4).getVelocity(), Eigen::Vector3d(0,0,0), 1.0/std::pow(1.5,0.5)));
+  REQUIRE(compareVector3d(s1->getParticle(4).getPosition(), Eigen::Vector3d(0,0,0),1.5));
+
+  REQUIRE(compareVector3d(s1->getParticle(5).getVelocity(), Eigen::Vector3d(0,0,0), 1.0/std::pow(5.2,0.5)));
+  REQUIRE(compareVector3d(s1->getParticle(5).getPosition(), Eigen::Vector3d(0,0,0),5.2));
+
+  REQUIRE(compareVector3d(s1->getParticle(6).getVelocity(), Eigen::Vector3d(0,0,0), 1.0/std::pow(9.5,0.5)));
+  REQUIRE(compareVector3d(s1->getParticle(6).getPosition(), Eigen::Vector3d(0,0,0),9.5));
+
+  REQUIRE(compareVector3d(s1->getParticle(7).getVelocity(), Eigen::Vector3d(0,0,0), 1.0/std::pow(19.2,0.5)));
+  REQUIRE(compareVector3d(s1->getParticle(7).getPosition(), Eigen::Vector3d(0,0,0),19.2));
+
+  REQUIRE(compareVector3d(s1->getParticle(8).getVelocity(), Eigen::Vector3d(0,0,0), 1.0/std::pow(30.1,0.5)));
+  REQUIRE(compareVector3d(s1->getParticle(8).getPosition(), Eigen::Vector3d(0,0,0),30.1));
+}
+
+TEST_CASE("Test evolveSystem function", "[evolveSystem]"){
+    // create simple system of two bodies
+
+    
+}
+
+
+
+

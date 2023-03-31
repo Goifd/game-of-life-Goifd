@@ -105,9 +105,46 @@ void pSystem::updateVelPos(double dt){
 
 void pSystem::evolveSystem(double t, double dt, double epsilon){
     // both methods are parallelized themselves
-    for(int i=0; i<t; i+=dt){
+    int steps = 0;
+    for(double i=0; i<=t; i+=dt){
+        //std::cout << t << std::endl;
+        // function calculates acceleration on all particles
         updateAccelerations(epsilon);
-        // threads should wait for each other here
+        // function updates velocity and position of particles
         updateVelPos(dt);
+        steps +=1;
     }
+    std::cout << "steps: " << steps << std::endl;
+}
+
+sysGenerator::sysGenerator(){
+    // set up random number generator
+    std::mt19937 rng_mt(1);
+    std::uniform_real_distribution<double> distribution(0, 2*M_PI);
+    auto dice = std::bind(distribution, rng_mt);
+
+    // add sun manually 
+    s1->addParticle(Particle(masses[0], Eigen::Vector3d(0,0,0), Eigen::Vector3d(0, 0, 0)));
+
+    double theta = 0.0;
+    double r = 0.0;
+    double m = 0.0;
+
+    // add other planets with random initial conditions
+    for(int i=1; i<9; i++){
+        theta = dice();
+        r = distances[i];
+        m = masses[i];
+
+        double r_x = r*std::sin(theta);
+        double r_y = r*std::cos(theta);
+        double v_x = -1/std::pow(r,0.5)*std::cos(theta);
+        double v_y = 1/std::pow(r,0.5)*std::sin(theta);
+
+        s1->addParticle(Particle(m, Eigen::Vector3d(r_x, r_y, 0.0), Eigen::Vector3d(v_x, v_y, 0.0)));
+    }
+}
+
+std::unique_ptr<pSystem> sysGenerator::getSystem(){
+    return move(s1);
 }

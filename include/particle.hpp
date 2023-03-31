@@ -5,6 +5,9 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <memory>
+#include <random>
+#include <math.h>
 
 class Particle {
     public:
@@ -51,6 +54,22 @@ class pSystem {
     private:
         int numParticles;
         std::vector<Particle> particles;
+};
+
+class sysGenerator{
+
+    public:
+        sysGenerator();
+        // return the unique pointer
+        std::unique_ptr<pSystem> getSystem();
+
+    private:
+        // Solar System data
+        std::vector<double> masses{1.,1./6023600,1./408524,1./332946.038,1./3098710,1./1047.55,1./3499,1./22962,1./19352};
+        std::vector<double> distances{0.0, 0.4, 0.7, 1, 1.5, 5.2, 9.5, 19.2, 30.1};    
+
+        // Solar System
+        std::unique_ptr<pSystem> s1 = std::make_unique<pSystem>();
 };
 
 #endif

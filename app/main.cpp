@@ -15,7 +15,7 @@ int main(int argc, char** argv) {
 
   // build parser
   app.add_option("-t, --time", t, "Total simulation time.");
-  app.add_option("-dt, --timestep", dt, "Time step for Euler integration.");
+  app.add_option("-s, --timestep", dt, "Time step for Euler integration.");
 
   // throw exception by the parser if input format is invalid
   // otherwise parse input
@@ -25,20 +25,28 @@ int main(int argc, char** argv) {
     return app.exit(e);
   }
 
-  // Solar System data
-  std::vector<double> masses{1.,1./6023600,1./408524,1./332946.038,1./3098710,1./1047.55,1./3499,1./22962,1./19352};
-  std::vector<double> distances{0.0, 0.4, 0.7, 1, 1.5, 5.2, 9.5, 19.2, 30.1};
+  // create timer
+  
+  // create system generator
+  sysGenerator generator = sysGenerator();
 
-  // Create Solar System
-  std::unique_ptr<pSystem> s1(new pSystem());
+  // initialize solar system
+  std::unique_ptr<pSystem> s1 = generator.getSystem();
 
-  // add sun manually 
-  s1->addParticle(Particle(masses[0], Eigen::Vector3d(0,0,0), Eigen::Vector3d(0, 0, 0)));
-  // add other planets with random initial conditions
-  for(int i=0; i<9; i++){
-    
-    s1->addParticle(Particle(masses[i], Eigen::Vector3d(0,0,0), Eigen::Vector3d(1, 0, 0)));
-  }
+  // the system with random initial conditions
+  std::cout << "The system before the evolution: " << std::endl;
+  s1->printParticles();
+
+  // evolve the system with total time t and timestep dt and epsilon=0.0
+  s1->evolveSystem(2*M_PI, dt, t);
+
+  // the system after the evolution
+  std::cout << "The system after evolving for t: " << t << " and with dt: " << dt << std::endl;
+  s1->printParticles();
+
+  
+
+  
 
   int returnStatus = EXIT_FAILURE;
 
