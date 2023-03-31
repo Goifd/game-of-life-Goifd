@@ -25,7 +25,10 @@ int main(int argc, char** argv) {
     return app.exit(e);
   }
 
-  // create timer
+  if(argc == 0 || dt<=0 || t<=0){
+    std::cout << "No argument given, or arguments are wrong. For help execute solarSystemSimulator --help." << std::endl;
+    return 0;
+  }
   
   // create system generator
   sysGenerator generator = sysGenerator();
@@ -34,15 +37,22 @@ int main(int argc, char** argv) {
   std::unique_ptr<pSystem> s1 = generator.getSystem();
 
   // the system with random initial conditions
-  std::cout << "The system before the evolution: " << std::endl;
+  std::cout << "The system before the evolution: \n" << std::endl;
   s1->printParticles();
 
+  // create timer
+  Timer timer;
   // evolve the system with total time t and timestep dt and epsilon=0.0
-  s1->evolveSystem(2*M_PI, dt, t);
+  s1->evolveSystem(t, dt);
+  // measure elapsed time
+  double elapsed = timer.elapsed();
 
   // the system after the evolution
+  std::cout << "Time taken to run the simulation: " << elapsed << std::endl;
   std::cout << "The system after evolving for t: " << t << " and with dt: " << dt << std::endl;
+  std::cout << "\n" << std::endl;;
   s1->printParticles();
+  
 
   
 

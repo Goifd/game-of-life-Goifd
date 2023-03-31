@@ -114,7 +114,8 @@ void pSystem::evolveSystem(double t, double dt, double epsilon){
         updateVelPos(dt);
         steps +=1;
     }
-    std::cout << "steps: " << steps << std::endl;
+    std::cout << "\n" << std::endl;
+    std::cout << "Total number of steps: " << steps << std::endl;
 }
 
 sysGenerator::sysGenerator(){
@@ -147,4 +148,12 @@ sysGenerator::sysGenerator(){
 
 std::unique_ptr<pSystem> sysGenerator::getSystem(){
     return move(s1);
+}
+
+void Timer::reset(){
+    curr = Clock::now();
+}
+
+double Timer::elapsed() const{
+    return std::chrono::duration_cast<Second>(Clock::now() - curr).count();
 }

@@ -8,6 +8,7 @@
 #include <memory>
 #include <random>
 #include <math.h>
+#include <chrono>
 
 class Particle {
     public:
@@ -70,6 +71,18 @@ class sysGenerator{
 
         // Solar System
         std::unique_ptr<pSystem> s1 = std::make_unique<pSystem>();
+};
+
+// timer class from the OpenMP examples, UCL PHAS0100 course, week 8 examples.
+class Timer {
+    public:
+        void reset();
+        double elapsed() const;
+
+    private:
+        using Clock = std::chrono::high_resolution_clock;
+        using Second = std::chrono::duration<double, std::ratio<1> >;
+        std::chrono::time_point<Clock> curr{Clock::now()};
 };
 
 #endif
