@@ -63,7 +63,7 @@ TEST_CASE("System initialization and modification works correctly", "[system_ini
     REQUIRE(s1->getNumOfParticles()==2);
 }
 
-TEST_CASE("Gravitational force between particles is as expected", "[calcAcceleration]"){
+TEST_CASE("Gravitational force calculation between particles works correctly", "[calcAcceleration]"){
     std::unique_ptr<pSystem> s1(new pSystem());
 
     Eigen::Vector3d acc1 = s1->calcAcceleration(Particle(100, Eigen::Vector3d(0,0,0), Eigen::Vector3d(1, 0, 0)),
@@ -86,7 +86,7 @@ TEST_CASE("Gravitational force between particles is as expected", "[calcAccelera
                                          -10));
 }
 
-TEST_CASE("Gravitational force between more than 2 particles works as is expected", "[updateAcceleration]"){
+TEST_CASE("Gravitational force calculation between more than 2 particles works correctly", "[updateAcceleration]"){
     // checks the equally sized case and also if the particle calculates its acceleration due to itself 
     // due to code structure
     std::unique_ptr<pSystem> s1(new pSystem());
@@ -112,7 +112,7 @@ bool compareVector3d(Eigen::Vector3d v1, Eigen::Vector3d v2, double range){
     return false;
 }
 
-TEST_CASE("Initial condition generator test","[initCondGenerator]"){
+TEST_CASE("Initial condition generator works correctly","[initCondGenerator]"){
 // create system generator
   solarSysGenerator generator = solarSysGenerator();
 
@@ -159,7 +159,23 @@ TEST_CASE("Initial condition generator test","[initCondGenerator]"){
   REQUIRE(compareVector3d(s1->getParticle(8).getPosition(), Eigen::Vector3d(0,0,0),30.1));
 }
 
-TEST_CASE("Test evolveSystem function", "[evolveSystem]"){
+TEST_CASE("Solar system evolves correctly", "[solarSys]"){
+// create system generator
+  solarSysGenerator generator = solarSysGenerator();
+
+  // initialize solar system
+  std::unique_ptr<pSystem> s1 = generator.generateInitialConditions();
+
+  // save Earth's initial pos
+  Eigen::Vector3d p = s1->getParticle(3).getPosition();
+  // evolve for one year
+  s1->evolveSystem(6.283185, 0.0001);
+
+  // check if Earth's initial position matches its position after one year
+  REQUIRE(s1->getParticle(3).getPosition().isApprox(p, 0.01));
+}
+
+TEST_CASE("evolveSystem function works correctly", "[evolveSystem]"){
     // create simple system of three bodies
     std::unique_ptr<pSystem> s1(new pSystem());
     s1->addParticle(Particle(100, Eigen::Vector3d(0,0,0), Eigen::Vector3d(0, 0, 0)));
@@ -187,6 +203,35 @@ TEST_CASE("Test evolveSystem function", "[evolveSystem]"){
     REQUIRE(s1->getParticle(2).getPosition().isApprox(Eigen::Vector3d(0.25, 0, 0), 0.001));  
 }
 
+TEST_CASE("Parallelization works correctly", "[parallelization]"){
+    // create simple system of three bodies
+    std::unique_ptr<pSystem> s1(new pSystem());
+    s1->addParticle(Particle(100, Eigen::Vector3d(0,0,0), Eigen::Vector3d(0, 0, 0)));
+    s1->addParticle(Particle(100, Eigen::Vector3d(1,1,0), Eigen::Vector3d(0, 0, 0)));
+    s1->addParticle(Particle(100, Eigen::Vector3d(-1,-1,0), Eigen::Vector3d(0, 0, 0)));
+    s1->addParticle(Particle(100, Eigen::Vector3d(-1,1,0), Eigen::Vector3d(0, 0, 0)));
+    s1->addParticle(Particle(100, Eigen::Vector3d(1,-1,0), Eigen::Vector3d(0, 0, 0)));
 
+    s1->evolveSystem(6.2832,0.0001);
+
+    REQUIRE(s1->getParticle(0).getVelocity().isApprox(Eigen::Vector3d(0, 0, 0), 0.001));
+    // symmetric system so absolute value of velocity and pos of four corner particles should always be equal
+    Eigen::Vector3d v1 = s1->getParticle(1).getVelocity().cwiseAbs();
+    Eigen::Vector3d v2 = s1->getParticle(2).getVelocity().cwiseAbs();
+    Eigen::Vector3d v3 = s1->getParticle(3).getVelocity().cwiseAbs();
+    Eigen::Vector3d v4 = s1->getParticle(4).getVelocity().cwiseAbs();
+    REQUIRE(v1.isApprox(v2));
+    REQUIRE(v2.isApprox(v3));
+    REQUIRE(v3.isApprox(v4));
+
+    Eigen::Vector3d r1 = s1->getParticle(1).getPosition().cwiseAbs();
+    Eigen::Vector3d r2 = s1->getParticle(2).getPosition().cwiseAbs();
+    Eigen::Vector3d r3 = s1->getParticle(3).getPosition().cwiseAbs();
+    Eigen::Vector3d r4 = s1->getParticle(4).getPosition().cwiseAbs();
+    REQUIRE(r1.isApprox(r2));
+    REQUIRE(r2.isApprox(r3));
+    REQUIRE(r3.isApprox(r4));
+
+}
 
 

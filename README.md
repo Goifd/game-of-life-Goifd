@@ -59,47 +59,47 @@ particle 0
 mass: 1
 position: (0,0,0)
 velocity: (0,0,0)
--------------------
+
 particle 1
 mass: 1.66014e-07
 position: (-0.00707,0.4,0)
 velocity: (-1.58,-0.028,0)
--------------------
+
 particle 2
 mass: 2.44784e-06
 position: (-0.288,0.638,0)
 velocity: (-1.09,-0.491,0)
--------------------
+
 particle 3
 mass: 3.00349e-06
 position: (0.721,0.693,0)
 velocity: (-0.693,0.721,0)
--------------------
+
 particle 4
 mass: 3.22715e-07
 position: (-0.00904,1.5,0)
 velocity: (-0.816,-0.00492,0)
--------------------
+
 particle 5
 mass: 0.000954608
 position: (5.18,0.454,0)
 velocity: (-0.0383,0.437,0)
--------------------
+
 particle 6
 mass: 0.000285796
 position: (5.75,-7.56,0)
 velocity: (0.258,0.196,0)
--------------------
+
 particle 7
 mass: 4.35502e-05
 position: (12.4,-14.6,0)
 velocity: (0.174,0.148,0)
--------------------
+
 particle 8
 mass: 5.16742e-05
 position: (-26.4,-14.5,0)
 velocity: (0.0881,-0.16,0)
--------------------
+
 
 
 Total number of steps: 629
@@ -111,47 +111,47 @@ particle 0
 mass: 1
 position: (0.000676,0.00014,0)
 velocity: (0.000217,5.64e-05,0)
--------------------
+
 particle 1
 mass: 1.66014e-07
 position: (0.111,0.387,0)
 velocity: (-1.51,0.432,0)
--------------------
+
 particle 2
 mass: 2.44784e-06
 position: (0.694,0.131,0)
 velocity: (-0.208,1.17,0)
--------------------
+
 particle 3
 mass: 3.00349e-06
 position: (0.717,0.698,0)
 velocity: (-0.698,0.716,0)
--------------------
+
 particle 4
 mass: 3.22715e-07
 position: (0.443,-1.43,0)
 velocity: (0.781,0.236,0)
--------------------
+
 particle 5
 mass: 0.000954608
 position: (4.24,3.01,0)
 velocity: (-0.254,0.357,0)
--------------------
+
 particle 6
 mass: 0.000285796
 position: (7.23,-6.16,0)
 velocity: (0.211,0.247,0)
--------------------
+
 particle 7
 mass: 4.35502e-05
 position: (13.5,-13.7,0)
 velocity: (0.162,0.16,0)
--------------------
+
 particle 8
 mass: 5.16742e-05
 position: (-25.8,-15.5,0)
 velocity: (0.0941,-0.156,0)
--------------------
+
 
 
 ## Exercise 2.1 energy results
@@ -208,7 +208,7 @@ dt: 0.000001 runtime: 1878.75 /step: 2.99013e-06
 
 Optimization for the dt=0.0001 case sped up the code from 775s to 15s which is more than a 50 times improvement. This is likely due to the fact that optimization speeds up loops quite a bit, and the slow part of this code is exactly those, loops.
 
-# Exercise 2.3 
+## Exercise 2.3 
 Summary, where n is the number of particles in the system:
 
 Simulation done: 
@@ -233,4 +233,41 @@ n: 2048
 
 It seems like the total runtime scales with n^2 since the /step time scales with n^2 and that the energy loss largely depends on the size
 of the system and it gets worse for large systems. This makes sense as for every velocity and position update the loss increases, and the more particles the more of these additions. I suspect that it's not linear in n as the error in one step depends on the error in the previous step, and due to this accumulation it could be a higher order polynomial or exponential.
+
+## Exercise 2.4
+Parallelization has been added to the code at two places
+
+1. updateVelPos(double dt): 
+
+2. updateAccelerations(double epsilon)
+In this case using the collapse(2) function leads to a data-race and errors in the simulations since in the second loop
+the threads are trying to access the same variable, acceleration. This could probably be solved if the acceleration was stored in a
+POD type eg. double ax, double ay, double az, but implementing this would come with the refactoring of a large part of the code 
+and the project specifically asks to use the Eigen::Vector3d container.
+
+Schedule(dynamic) is slower than schedule(static) likely because the iterations are similar in execution time, and the extra 
+effort to try to dynamically allocate the iterations between the threads only causes a computational overhead without any 
+speedup. This is shown by the following results:
+
+schedule testing with n=256 t=62.831 dt=0.001 epsilon=0.0 on 4 threads
+
+schedule(static) 
+
+Simulation done: 
+n: 256
+%E change: 247.108% t: 62.831 dt: 0.001 runtime: 67.5888s  /step: 0.0
+
+Simulation done: 
+n: 300
+%E change: 4267.32% t: 62.831 dt: 0.001 runtime: 78.4764s  /step: 0.00124901s
+
+schedule(dynamic) 
+
+Simulation done: 
+n: 256
+%E change: 247.108% t: 62.831 dt: 0.001 runtime: 90.8499s  /step: 0.00144594s
+
+Simulation done: 
+n: 300
+%E change: 4267.32% t: 62.831 dt: 0.001 runtime: 107.53s  /step: 0.00171141s
 

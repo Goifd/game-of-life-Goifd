@@ -58,9 +58,9 @@ int main(int argc, char** argv) {
 
   // print initial state
   //std::cout << "Initial state of the system: " << std::endl;
-  //s1->printParticles();
+  s1->printParticles();
 
-  // evolve the system with total time t and timestep dt and epsilon=0.0
+  // evolve the system with total time t and time step dt and epsilon=0.0
   s1->evolveSystem(t, dt, epsilon);
 
   // measure elapsed time

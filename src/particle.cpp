@@ -116,6 +116,8 @@ Eigen::Vector3d pSystem::calcAcceleration(const Particle& p1, const Particle& p2
 void pSystem::updateAccelerations(double epsilon){
     // first loop can be parallelized, do not need copy of classes since acceleration does not depend on the current value of acceleration
     // and other parameters do not change
+
+    #pragma omp parallel for collapse(1) schedule(static) // acceleration in particle class
     for(Particle& p : particles){
         for(Particle& k : particles){
             if(&p != &k)
@@ -125,6 +127,7 @@ void pSystem::updateAccelerations(double epsilon){
 }
 
 void pSystem::updateVelPos(double dt){
+    #pragma omp parallel for collapse(1) schedule(static)
     for(Particle& p : particles){
         p.update(dt);
     }
@@ -137,6 +140,7 @@ void pSystem::evolveSystem(double t, double dt, double epsilon){
         // function calculates acceleration on all particles
         updateAccelerations(epsilon);
         // function updates velocity and position of particles
+        #pragma omp barrier
         updateVelPos(dt);
         t_elapsed += dt;
     }
@@ -178,11 +182,11 @@ randomSysGenerator::randomSysGenerator(int n){
     // set up random number generators
     std::mt19937 rng_mt(1);
     // theta distribution
-    std::uniform_real_distribution<double> distTheta(0, 2*M_PI);
+    std::uniform_real_distribution<double> distTheta(0.0, 2*M_PI);
     // distance distribution
     std::uniform_real_distribution<double> distR(0.4, 30.0);
     // mass distribution
-    std::uniform_real_distribution<double> distM(1/6000000.0, 1/1000.0);
+    std::uniform_real_distribution<double> distM(1.0/6000000.0, 1.0/1000.0);
 
     auto dice = std::bind(distTheta, rng_mt);
 

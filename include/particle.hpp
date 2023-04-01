@@ -22,12 +22,14 @@ class Particle {
         void addAcceleration(Eigen::Vector3d a);
         void update(double dt);
         void print() const;
+        
 
     private:
         double mass;
         Eigen::Vector3d position;
         Eigen::Vector3d velocity;
         Eigen::Vector3d acceleration;
+        
 };
 
 class pSystem {
