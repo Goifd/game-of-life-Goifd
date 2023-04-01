@@ -235,5 +235,28 @@ TEST_CASE("Parallelization works correctly", "[parallelization]"){
 }
 
 TEST_CASE("Energy calculation parallelizes correctly" ,"[Eparallelization]"){
+    // Energy calculated without parallelization
+    std::unique_ptr<pSystem> s1(new pSystem());
+    s1->addParticle(Particle(100, Eigen::Vector3d(0,0,0), Eigen::Vector3d(1, 0, 0)));
+    s1->addParticle(Particle(100, Eigen::Vector3d(1,0,0), Eigen::Vector3d(1, 0, 0)));
+    std::tuple<double, double> E = s1->getEnergy();
+    
+    // check small hand calculated example first
+    REQUIRE((std::get<0>(E) + std::get<1>(E))==-9900.0);
 
+    // check for large system
+    std::unique_ptr<pSystem> s2(new pSystem());
+    
+    for(int i=0; i<10000; i++){
+        s2->addParticle(Particle(100, Eigen::Vector3d(i, 0, 0), Eigen::Vector3d(i, 0, 0)));
+    }
+    // serial time: 0.373741s
+    // 4 thread time: 0.135249
+    double E_serial = 1.66633e+13;
+    //Timer timer;
+    std::tuple<double, double> E_tot = s2->getEnergy();
+    //double t = timer.elapsed();
+    
+    REQUIRE_THAT((std::get<0>(E_tot) + std::get<1>(E_tot)), Catch::Matchers::WithinAbs(E_serial,1e9));
+    
 }

@@ -86,6 +86,7 @@ std::tuple<double, double> pSystem::getEnergy(){
     double e_pot = 0.0;
     double distance = 0.0;
 
+    #pragma omp parallel for collapse(1) schedule(static) reduction(+:E_kin, E_pot) private(e_kin, e_pot)
     for(Particle& p : particles){
 
         // add Particle p's kinetic energy to total energy
