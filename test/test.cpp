@@ -234,4 +234,6 @@ TEST_CASE("Parallelization works correctly", "[parallelization]"){
 
 }
 
+TEST_CASE("Energy calculation parallelizes correctly" ,"[Eparallelization]"){
 
+}

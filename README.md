@@ -175,14 +175,14 @@ dt  % E decrease
 0.000005    0.0549349 % 
 0.000001    0.0116069 % 
 
-Which is as expected, the smaller the timestep the smaller the energy loss. Note that the energy loss is worse than linear.
+Which is as expected, the smaller the time step the smaller the energy loss. Note that the energy loss is worse than linear.
 
 ## Exercise 2.2
 
-// without optimization
+// without optimization -O0
 dt: 0.0001 runtime: 775.441 /step: 0.000123415
 
-// with optimization
+// with optimization -O2
 
 dt: 0.1 runtime: 0.0215727 /step: 3.4335e-06
 
@@ -235,6 +235,7 @@ It seems like the total runtime scales with n^2 since the /step time scales with
 of the system and it gets worse for large systems. This makes sense as for every velocity and position update the loss increases, and the more particles the more of these additions. I suspect that it's not linear in n as the error in one step depends on the error in the previous step, and due to this accumulation it could be a higher order polynomial or exponential.
 
 ## Exercise 2.4
+### a
 Parallelization has been added to the code at two places
 
 1. updateVelPos(double dt): 
@@ -271,3 +272,25 @@ Simulation done:
 n: 300
 %E change: 4267.32% t: 62.831 dt: 0.001 runtime: 107.53s  /step: 0.00171141s
 
+### b
+All tests were ran with -O2 compiler optimization.
+CPU specification: 4 cores 8 threads
+Strong scaling benchmarking was done with ./build/solarSystemSimulator -t 6.2831 -s 0.0001 -n 128.
+Weak scaling benchmarking was done with ./build/solarSystemSimulator -t 6.2831 -s 0.0001 -n <input>.
+
+STRONG SCALING
+|'OMP_NUM_THREADS | Time (s) | Seedup |
+|---|-------|----|
+| 1 | 39.5s | x  |
+| 2 | 21.6s |1.83|
+| 3 | 16.8s |2.35|
+| 4 | 15.2s |2.60|
+| 8 | 51.0s |0.77|
+
+WEAK SCALING
+|'OMP_NUM_THREADS | Num Particles | Time (s) | Seedup |
+|---|---|--------|----|
+| 1 |128| 39.5s  | x  |
+| 2 |256| 86.43s |0.46|
+| 3 |384| 192.96s|0.25|
+| 4 |512| 271.73s|0.15|
