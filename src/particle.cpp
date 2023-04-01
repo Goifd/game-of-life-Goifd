@@ -132,16 +132,13 @@ void pSystem::updateVelPos(double dt){
 
 void pSystem::evolveSystem(double t, double dt, double epsilon){
     // both methods are parallelized themselves
-    int steps = 0;
     double t_elapsed = dt;
-    while(t_elapsed<=t){
-        //std::cout << t << std::endl;
+    while(t_elapsed<=t){  
         // function calculates acceleration on all particles
         updateAccelerations(epsilon);
         // function updates velocity and position of particles
         updateVelPos(dt);
         t_elapsed += dt;
-        steps += 1;
     }
 }
 

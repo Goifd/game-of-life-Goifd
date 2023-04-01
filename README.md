@@ -209,19 +209,28 @@ dt: 0.000001 runtime: 1878.75 /step: 2.99013e-06
 Optimization for the dt=0.0001 case sped up the code from 775s to 15s which is more than a 50 times improvement. This is likely due to the fact that optimization speeds up loops quite a bit, and the slow part of this code is exactly those, loops.
 
 # Exercise 2.3 
+Summary, where n is the number of particles in the system:
 
 Simulation done: 
 n: 8
-%E change: 1.75464e-05% t: 6.2832 dt: 0.001 runtime: 0.0129206s  /step: 2.05644e-06s
+%E change: 0.00175464% t: 6.2832 dt: 0.001 runtime: 0.0155922s  /step: 2.48165e-06s
 
 Simulation done: 
 n: 64
-%E change: 0.00744302% t: 6.2832 dt: 0.001 runtime: 0.918987s  /step: 0.000146266s
+%E change: 0.394413% t: 6.2832 dt: 0.001 runtime: 0.960916s  /step: 0.000152939s
 
 Simulation done: 
 n: 256
-%E change: 0.376662% t: 6.2832 dt: 0.001 runtime: 14.9825s  /step: 0.0023846s
+%E change: 6.62508% t: 6.2832 dt: 0.001 runtime: 14.9335s  /step: 0.00237681s
 
 Simulation done: 
 n: 1024
-%E change: 8.82704% t: 6.2832 dt: 0.001 runtime: 249.426s  /step: 0.0396985s
+%E change: 15.5554% t: 6.2832 dt: 0.001 runtime: 254.082s  /step: 0.0404396s
+
+Simulation done: 
+n: 2048
+%E change: 47.1344% t: 6.2832 dt: 0.001 runtime: 1010.95s  /step: 0.160902s
+
+It seems like the total runtime scales with n^2 since the /step time scales with n^2 and that the energy loss largely depends on the size
+of the system and it gets worse for large systems. This makes sense as for every velocity and position update the loss increases, and the more particles the more of these additions. I suspect that it's not linear in n as the error in one step depends on the error in the previous step, and due to this accumulation it could be a higher order polynomial or exponential.
+

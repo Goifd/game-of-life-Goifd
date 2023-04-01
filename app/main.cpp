@@ -70,7 +70,7 @@ int main(int argc, char** argv) {
   std::tuple<double, double> E_after = s1->getEnergy();
 
   double percentChangeE = ((std::get<0>(E) + std::get<1>(E))-(std::get<0>(E_after) + std::get<1>(E_after)))/
-                          (std::get<0>(E) + std::get<1>(E));
+                          (std::get<0>(E) + std::get<1>(E))*100;
 
   // print final state
   std::cout << std::endl;
