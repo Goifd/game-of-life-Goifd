@@ -25,4 +25,5 @@ add_subdirectory(app)
 add_subdirectory(src)
 
 # Build tests
+enable_testing()
 add_subdirectory(test)

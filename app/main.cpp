@@ -9,6 +9,7 @@
 
 int main(int argc, char** argv) {
 
+  // set up parser
   CLI::App app{"Solar System Simulator"};
 
   // these will throw exceptions if not initialized
@@ -32,7 +33,8 @@ int main(int argc, char** argv) {
   }
 
   if(argc == 0 || dt<=0 || t<=0 || epsilon<0 || n < 0){
-    std::cout << "No argument given, or arguments are wrong. For help execute solarSystemSimulator --help." << std::endl;
+    std::cout << "No argument given, or arguments are wrong." << std::endl;
+    std::cerr << app.help() << std::flush;
     return 0;
   }
   
@@ -44,7 +46,7 @@ int main(int argc, char** argv) {
   // create timer
   Timer timer;
 
-  // initialize system
+  // initialize system based one which type of simulation is ran
   std::unique_ptr<pSystem> s1;
   if(n>0)
   {
@@ -57,7 +59,7 @@ int main(int argc, char** argv) {
   std::tuple<double, double> E = s1->getEnergy();
 
   // print initial state
-  //std::cout << "Initial state of the system: " << std::endl;
+  std::cout << "Initial state of the system: " << std::endl;
   s1->printParticles();
 
   // evolve the system with total time t and time step dt and epsilon=0.0
@@ -75,10 +77,11 @@ int main(int argc, char** argv) {
   // print final state
   std::cout << std::endl;
   std::cout << "Simulation done: " << std::endl;
-  std::cout << "n: " << n << std::endl;
-  std::cout << "%E change: " << percentChangeE <<  "% t: " << t << " dt: " << dt << " runtime: " << elapsed << "s  /step: " << elapsed/int(t/dt) << "s" << std::endl;
+  std::cout << "n: " << n << " t: " << t << " dt: " << dt << " runtime: " << elapsed << "s  /step: " << elapsed/int(t/dt) << "s" << std::endl;
+  std::cout << "%E change during the simulation: " << percentChangeE <<  std::endl;
   std::cout << std::endl;
-  //s1->printParticles();
+  std::cout << "Particle positions and velocity after the simulation:" << std::endl;
+  s1->printParticles();
 
   return 0;
 }

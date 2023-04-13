@@ -46,7 +46,45 @@ You are expected to edit the `CMakeLists.txt` file in each folder to add or remo
 
 ## Usage Instructions
 
-You should fill in the instructions for using the app here.
+The simulation has two modes:
+1. Simulating our solar system on stable orbits, but random initial conditions.
+e.g. ./build/solarSystemSimulator -t 6.2831 -s 0.0001 simulates our solar system with random initial conditions and for 1 year
+
+2. Simulating a solar system with n bodies on stable orbits and random initial condition.
+e.g. ./build/solarSystemSimulator -n 256 -t 6.2831 -s 0.0001 simulates a solar system with 1 star and 255 planets for 1 year
+
+To specify the mode use the -n or --nbody flag: if the flag is not specified the program will simulate our solar system, if the flag is specified it will simulate a system with n bodies, where n is given by running the command: 
+./build/solarSystemSimulator -n 5 -t 100 -s 0.01
+
+Further details MUST be specified for both type of simulations using the flags:
+-s / --timestep: specify the timestep used for the Euler integration process
+-t / --time: specify for how long the system should be simulated
+IMPORTANT: The simulation is normalized so that t=2PI corresponds to one year.
+
+Optional flag:
+-e / --epsilon: specify softening factor, helps when particles are very close, default value is 0
+e.g. ./build/solarSystemSimulator -n 256 -t 6.2831 -s 0.0001 -e 0.001
+
+Other flags:
+-h / --help: prints out the flag options
+
+Data and physics background:
+
+The system is normalized so that Earth will be 1 unit away from the Sun and 2*PI corresponds to one year.
+
+The following data is used for our solar system's initialization:
+// Masses in order Sun, Mercury, Venus, etc
+{1.,1./6023600,1./408524,1./332946.038,1./3098710,1./1047.55,1./3499,1./22962,1./19352}
+// Distances from Sun
+{0.0, 0.4, 0.7, 1, 1.5, 5.2, 9.5, 19.2, 30.1}
+
+stable orbits are generated using:
+r_x = r*sin(theta)
+r_y = r*cos(theta)
+v_x = -1/sqrt(r)*cos(theta)
+v_y = 1/sqrt(r)*sin(theta)
+
+theta is randomly specified between 0 and 2Pi, r is the distance from the Sun given by the above list
 
 ## Credits
 

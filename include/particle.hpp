@@ -11,6 +11,9 @@
 #include <chrono>
 #include <tuple>
 
+// Basic data type for simulation particle=body in the solar system
+// only functionality is the update method, other system evolution functionalities are implemented
+// in pSystem class
 class Particle {
     public:
         Particle(double in_mass, Eigen::Vector3d pos, Eigen::Vector3d vel);
@@ -32,6 +35,10 @@ class Particle {
         
 };
 
+
+// container to store a system of interacting particles
+// system can be manually populated with particles, and then the evolveSystem
+// function handles everything evolution related
 class pSystem {
     public:
         pSystem();
@@ -61,6 +68,7 @@ class pSystem {
         std::vector<Particle> particles;
 };
 
+// template to enforce Generator uniformity, they must return a unique_ptr to the a pSystem
 class InitialConditionGenerator{
     public:
         virtual std::unique_ptr<pSystem> generateInitialConditions() = 0;
@@ -70,6 +78,7 @@ class InitialConditionGenerator{
         std::unique_ptr<pSystem> s1 = std::make_unique<pSystem>();
 };
 
+// generates our solar system with stable orbits
 class solarSysGenerator : public InitialConditionGenerator{
 
     public:
@@ -83,6 +92,7 @@ class solarSysGenerator : public InitialConditionGenerator{
         std::vector<double> distances{0.0, 0.4, 0.7, 1, 1.5, 5.2, 9.5, 19.2, 30.1};    
 };
 
+// generates a random solar system with n particles, all on stable orbits
 class randomSysGenerator : public InitialConditionGenerator{
 
     public:
