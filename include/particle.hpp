@@ -101,7 +101,7 @@ class randomSysGenerator : public InitialConditionGenerator{
         std::unique_ptr<pSystem> generateInitialConditions();
 };
 
-// timer class from the UCL PHAS0100 course, OpenMP week 8 examples.
+// timer class from the UCL PHAS0100 course, OpenMP week 8 example.
 class Timer {
     public:
         void reset();

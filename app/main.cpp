@@ -77,11 +77,11 @@ int main(int argc, char** argv) {
   // print final state
   std::cout << std::endl;
   std::cout << "Simulation done: " << std::endl;
-  std::cout << "n: " << n << " t: " << t << " dt: " << dt << " runtime: " << elapsed << "s  /step: " << elapsed/int(t/dt) << "s" << std::endl;
-  std::cout << "%E change during the simulation: " << percentChangeE <<  std::endl;
-  std::cout << std::endl;
   std::cout << "Particle positions and velocity after the simulation:" << std::endl;
   s1->printParticles();
+  std::cout << "Simulation summary: " << std::endl;
+  std::cout << "n: " << n << " t: " << t << " dt: " << dt << " runtime: " << elapsed << "s  /step: " << elapsed/int(t/dt) << "s" << std::endl;
+  std::cout << "%E change during the simulation: " << percentChangeE <<  std::endl;
 
   return 0;
 }
